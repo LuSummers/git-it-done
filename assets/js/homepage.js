@@ -5,11 +5,20 @@ var getUserRepos = function(user) {
   var apiUrl = "https://api.github.com/users/" + user + "/repos";
 
   //make a request to the url
-  fetch(apiUrl).then(function(response) {
+  fetch(apiUrl)
+  .then(function(response) {
+    if (response.ok){
     response.json().then (function(data) {
       displayRepos(data,user);
-    }); 
-  });
+    }); }
+    else {
+      alert("Error:Github User Not Found");
+    }
+  })
+  .catch(function(error){
+    //NOTITCE THIS '.catch()' GETTING CHAINED ONTO THE END OF THE '.THEN()'METHOD
+    alert("Unable to connect to Github")
+  })
 };
 getUserRepos("microsoft");
 
@@ -33,12 +42,20 @@ var formSubmitHandler = function(event) {
 userFormEL.addEventListener("submit", formSubmitHandler);
 
 var displayRepos = function (repos, searchTerm) {
+  //check if api returned any repos
+
+ 
   console.log(repos);
   console.log(searchTerm);
 
   //clear old content
   repoContainerEl.textContent ="";
   repoSearchTerm.textContent = searchTerm;
+
+   if(repos.length === 0) {
+    repoContainerEl.textContent ="NO repositories found.";
+    return;
+  }
 
   //loop over repos
   for (var i =0 ; i <repos.length; i++){
